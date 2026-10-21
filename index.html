@@ -26,7 +26,7 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emeralddeep text-white shadow-md">
       <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.7">
         <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/>
-        <path d="M4 5.5v16M8 7h8M8 11h8M8 15h5"/>
+        <path d="M4 5.5v16M8 7h8M8 15h5"/>
       </svg>
     </div>
     <div class="min-w-0">
@@ -142,7 +142,6 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     queryInput.value = savedQuery;
   }
 
-  // SIMPAN POSISI SCROLL SEBELUM TINGGALKAN HALAMAN
   window.addEventListener('beforeunload', () => {
     localStorage.setItem('miftahul_scroll_pos', window.scrollY);
   });
@@ -156,13 +155,13 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     if (watchedVideos.includes(videoId)) {
       watchedVideos = watchedVideos.filter(id => id !== videoId);
       cardEl.classList.remove('watched-card');
-      buttonEl.innerHTML = `✓ Tandai Selesai Ditonton`;
-      buttonEl.className = 'w-full rounded-lg border border-slate-300 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100';
+      buttonEl.innerHTML = `✓ Tandai Ditonton`;
+      buttonEl.className = 'rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100';
     } else {
       watchedVideos.push(videoId);
       cardEl.classList.add('watched-card');
       buttonEl.innerHTML = `★ Sudah Ditonton`;
-      buttonEl.className = 'w-full rounded-lg bg-emeraldsoft py-1.5 text-xs font-bold text-emeralddeep';
+      buttonEl.className = 'rounded-lg bg-emeraldsoft px-2 py-1 text-xs font-bold text-emeralddeep';
     }
     localStorage.setItem('miftahul_watched_videos', JSON.stringify(watchedVideos));
   }
@@ -188,10 +187,10 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
         <div>
           ${thumb ? `<img src="${escapeHTML(thumb)}" alt="" class="aspect-video w-full object-cover">` : ''}
           <div class="p-4">
-            <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center justify-between gap-2 mb-2">
               <span class="rounded-full bg-emeraldsoft text-emeralddeep px-2.5 py-1 text-[11px] font-semibold">Hasil YouTube</span>
-              <button type="button" class="toggle-watch-btn ${isWatched ? 'w-full rounded-lg bg-emeraldsoft py-1.5 text-xs font-bold text-emeralddeep' : 'w-full rounded-lg border border-slate-300 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100'}" data-id="${videoId}">
-                ${isWatched ? '★ Sudah Ditonton' : '✓ Tandai Selesai Ditonton'}
+              <button type="button" class="toggle-watch-btn ${isWatched ? 'rounded-lg bg-emeraldsoft px-2 py-1 text-xs font-bold text-emeralddeep' : 'rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100'}" data-id="${videoId}">
+                ${isWatched ? '★ Sudah Ditonton' : '✓ Tandai Ditonton'}
               </button>
             </div>
             <h3 class="line-clamp-2 mt-2 text-base font-bold text-slate-900">${escapeHTML(title)}</h3>
@@ -208,7 +207,6 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       const watchBtn = card.querySelector('.toggle-watch-btn');
       watchBtn.addEventListener('click', () => toggleWatched(videoId, watchBtn, card));
 
-      // SIMPAN POSISI SCROLL PAS TOMBOL TONTON DIKLIK
       const watchLink = card.querySelector('.watch-link');
       watchLink.addEventListener('click', () => {
         localStorage.setItem('miftahul_scroll_pos', window.scrollY);
@@ -217,12 +215,11 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       results.appendChild(card);
     });
 
-    // KEMBALIKAN POSISI SCROLL SETELAH HASIL SELESAI DIMUAT
     const savedScroll = localStorage.getItem('miftahul_scroll_pos');
     if (savedScroll) {
       setTimeout(() => {
         window.scrollTo(0, parseInt(savedScroll, 10));
-      }, 100);
+      }, 150);
     }
   }
 
