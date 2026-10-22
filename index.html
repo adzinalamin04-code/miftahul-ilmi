@@ -63,11 +63,10 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       <div class="grid gap-2 sm:grid-cols-1">
         <label class="flex min-w-0 items-center gap-3 px-2 border-b border-slate-100 pb-2">
           <svg class="h-5 w-5 shrink-0 text-navydeep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
-          <input id="queryInput" class="focus-ring min-w-0 w-full border-0 bg-transparent py-1.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 sm:text-base" type="search" value="Penjelasan tauhid" placeholder="Contoh: hukum musik, tauhid, sabar..." autocomplete="off">
+          <input id="queryInput" class="focus-ring min-w-0 w-full border-0 bg-transparent py-1.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 sm:text-base" type="search" value="fiqih" placeholder="Contoh: hukum musik, tauhid, sabar..." autocomplete="off">
         </label>
       </div>
 
-      <!-- Filter Dropdowns Grid -->
       <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div>
           <label class="text-[11px] font-bold text-slate-500 mb-1 block">Topik/Kategori:</label>
@@ -134,7 +133,6 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       </div>
     </form>
 
-    <!-- Fitur 7: Riwayat Pencarian -->
     <div class="relative mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-200">
       <span class="mr-1 font-semibold text-[11px] text-slate-300">Riwayat Pencarian:</span>
       <div id="searchHistoryContainer" class="flex flex-wrap items-center gap-1.5"></div>
@@ -192,7 +190,7 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
   const searchSection = $('searchSection');
   const searchHistoryContainer = $('searchHistoryContainer');
 
-  const apiKey = 'AIzaSyAVn3jQwRSVKA-3rNHlWezKIDQO2h4eRas';
+  const apiKey = 'AIzaSyA4soggB4WLeWSVJbEqj8yvUC6pYUMSBqo';
   let nextPageToken = '';
   let isAppendMode = false;
   let currentView = 'search';
@@ -201,7 +199,7 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
   let favVideos = JSON.parse(localStorage.getItem('miftahul_fav_videos') || '[]');
   let playlists = JSON.parse(localStorage.getItem('miftahul_playlists') || '{"Belajar Tauhid":[], "Fiqih Ibadah":[]}');
   let videoNotes = JSON.parse(localStorage.getItem('miftahul_video_notes') || '{}');
-  let searchHistory = JSON.parse(localStorage.getItem('miftahul_search_history') || '["Penjelasan tauhid", "Hukum musik", "Riyadhus Shalihin"]');
+  let searchHistory = JSON.parse(localStorage.getItem('miftahul_search_history') || '["fiqih", "Penjelasan tauhid", "Riyadhus Shalihin"]');
 
   function saveStorage() {
     localStorage.setItem('miftahul_watched_videos', JSON.stringify(watchedVideos));
@@ -243,6 +241,10 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     searchHistory.unshift(term);
     saveStorage();
     renderHistory();
+  }
+
+  function escapeHTML(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function toggleFav(itemData, buttonEl) {
@@ -377,7 +379,7 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           <span class="text-[10px] font-bold text-slate-400">Catatan &amp; Timestamp:</span>
           <button type="button" class="edit-note-btn text-[10px] font-bold text-navydeep underline">${savedNote ? 'Edit Catatan' : '+ Catatan'}</button>
         </div>
-        <p class="note-text text-xs text-slate-600 mt-1 italic">${savedNote ? savedNote : '<span class="text-slate-300">Belum ada catatan</span>'}</p>
+        <p class="note-text text-xs text-slate-600 mt-1 italic">${savedNote ? escapeHTML(savedNote) : '<span class="text-slate-300">Belum ada catatan</span>'}</p>
       `;
 
       p4.appendChild(topMeta);
@@ -512,7 +514,6 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     });
   }
 
-  // Fitur 8: Dashboard Progres Belajar
   function renderDashboard() {
     currentView = 'dashboard';
     updateTabs();
@@ -560,7 +561,7 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           <div class="h-full bg-navydeep rounded-full transition-all duration-500" style="width: ${progressPct}%"></div>
         </div>
         <p class="text-xs text-slate-500 mt-3">
-          ${progressPct >= 100 ? '🎉 Masyā'Allāh! Target belajar bulan ini telah tercapai.' : 'Barakallahu fiik, terus istiqamah menyimak kajian Sunnah.'}
+          ${progressPct >= 100 ? '🎉 Masyā\'Allāh! Target belajar bulan ini telah tercapai.' : 'Barakallahu fiik, terus istiqamah menyimak kajian Sunnah.'}
         </p>
       </div>
     `;
@@ -590,18 +591,18 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       return;
     }
 
+    sessionStorage.setItem('miftahul_last_query', query);
     addSearchHistory(query);
 
     const contentType = document.querySelector('input[name="contentType"]:checked')?.value || 'youtube';
-    const salafiKeywords = 'Firanda OR "Khalid Basalamah" OR "Syafiq Riza" OR "Nuzul Dzulqarnain" OR "Yufid TV" OR "Rodja TV" OR "Erwandi Tarmizi" OR "Ammi Nur Baits" OR "Badrussalam" OR "Raehanul Bahraen" OR "Abdullah Roy" OR "Yazid Jawwas" OR "Muflih Safitra" OR "Sufyan Baswedan" OR "Abdurrahman Thayyib" OR "Sofyan Ruray" OR "Maududi Abdullah" OR "Farhan Abu Furaihan" OR "Harits Abu Naufal"';
 
     if (contentType === 'instagram') {
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(query + ' (' + salafiKeywords + ') site:instagram.com/reel/'), '_blank');
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(query + ' site:instagram.com/reel/'), '_blank');
       return;
     }
 
     if (contentType === 'article') {
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(query + ' site:rumaysho.com OR site:muslim.or.id OR site:konsultasisyariah.com OR site:almanhaj.or.id OR site:yufid.com OR site:badrustalam.com OR site:pengusahamuslim.com'), '_blank');
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(query + ' site:rumaysho.com OR site:muslim.or.id OR site:konsultasisyariah.com OR site:almanhaj.or.id'), '_blank');
       return;
     }
 
@@ -614,16 +615,18 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     try {
       const selectedUstadz = ustadzSelect.value;
       const selectedKitab = kitabSelect.value;
-      const salafiFilter = selectedUstadz ? `"${selectedUstadz}"` : '("Ustadz Firanda" OR "Khalid Basalamah" OR "Syafiq Riza" OR "Nuzul Dzulqarnain" OR "Yufid TV" OR "Rodja TV" OR "Erwandi Tarmizi" OR "Ammi Nur Baits")';
       const category = categorySelect.value;
-      const kitabQuery = selectedKitab ? `"${selectedKitab}"` : '';
       
-      const finalQuery = (query + ' ' + kitabQuery + ' ' + category + ' ' + salafiFilter).trim();
+      let finalQuery = query;
+      if (selectedKitab) finalQuery += ' ' + selectedKitab;
+      if (selectedUstadz) finalQuery += ' ' + selectedUstadz;
+      else finalQuery += ' sunnah salaf';
+      if (category) finalQuery += ' ' + category;
       
       const params = new URLSearchParams({
         part: 'snippet',
         type: 'video',
-        q: finalQuery,
+        q: finalQuery.trim(),
         order: orderSelect.value,
         maxResults: '12',
         safeSearch: 'strict',
@@ -644,14 +647,15 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
 
       const items = data.items || [];
       badge.textContent = contentType === 'shorts' ? 'YouTube Shorts' : 'Video YouTube';
-      summary.textContent = 'Menampilkan hasil untuk "' + query + '".';
+      summary.textContent = 'Menampilkan ' + items.length + ' hasil untuk "' + query + '".';
       renderCards(items, isAppendMode);
     } catch (error) {
-      const fallbackQuery = encodeURIComponent(query + ' ' + kitabSelect.value + ' kajian sunnah salaf');
+      const fallbackUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query + ' sunnah salaf');
       notice.className = 'mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs leading-5 text-amber-900';
-      notice.innerHTML = '<strong>Kuota Harian Google Habis:</strong> Silakan buat Google API Key baru atau <a href="https://www.youtube.com/results?search_query=' + fallbackQuery + '" target="_blank" class="underline font-bold">klik di sini untuk cari di YouTube</a>.';
+      notice.innerHTML = '<strong>Gagal Memuat API:</strong> Membuka hasil pencarian YouTube di tab baru... (<a href="' + fallbackUrl + '" target="_blank" class="underline font-bold">Klik di sini jika tidak terbuka otomatis</a>)';
       results.innerHTML = '';
       emptyState.classList.add('hidden');
+      window.open(fallbackUrl, '_blank');
     } finally {
       searchButton.disabled = false;
       isAppendMode = false;
@@ -677,6 +681,11 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     });
   }
 
+  const lastQuery = sessionStorage.getItem('miftahul_last_query');
+  if (lastQuery) {
+    queryInput.value = lastQuery;
+  }
+  
   searchYouTube();
 })();
 </script>
